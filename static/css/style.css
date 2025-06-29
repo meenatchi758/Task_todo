@@ -1,0 +1,108 @@
+/* Reset & base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f4f7fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+header {
+  background: #2c3e50;
+  color: #fff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header a {
+  color: #ecf0f1;
+  margin-left: 1rem;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+main {
+  padding: 2rem;
+}
+
+/* Flash messages */
+.flash {
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  color: white;
+}
+.flash.success { background-color: #2ecc71; }
+.flash.danger { background-color: #e74c3c; }
+
+/* Forms */
+form input, form textarea, form select {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.5rem 0 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+form button {
+  background: #2980b9;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+form button:hover {
+  background: #1c6691;
+}
+
+/* Task Kanban Board */
+.kanban {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-around;
+  margin-top: 2rem;
+}
+
+.column {
+  flex: 1;
+  background: #ecf0f1;
+  padding: 1rem;
+  border-radius: 8px;
+  min-height: 300px;
+}
+
+.column h3 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.task {
+  background: white;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  cursor: grab;
+  transition: background 0.2s;
+}
+
+.task:hover {
+  background: #f0f8ff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .kanban {
+    flex-direction: column;
+  }
+}

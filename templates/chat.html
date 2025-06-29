@@ -1,0 +1,68 @@
+<!-- templates/chat.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Room</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        #messages { border: 1px solid #ccc; height: 300px; overflow-y: scroll; padding: 10px; }
+        .message { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Welcome, {{ username }}!</h2>
+    <p><a href="{{ url_for('logout') }}">Logout</a></p>
+
+    <h3>Choose a user to chat with:</h3>
+    <ul>
+        {% for user in users %}
+            {% if user.username != username %}
+                <li><a href="#" onclick="startChat('{{ user.username }}')">{{ user.username }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+    <hr>
+
+    <h3>Chat Room: <span id="room-name">Not connected</span></h3>
+    <div id="messages"></div>
+
+    <input type="text" id="messageInput" placeholder="Type your message">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const socket = io();
+        let room = "";
+
+        function startChat(partner) {
+            room = [partner, "{{ username }}"].sort().join("_");
+            document.getElementById('room-name').innerText = room;
+            document.getElementById('messages').innerHTML = '';
+            socket.emit('join', { room: room });
+        }
+
+        function sendMessage() {
+            const message = document.getElementById('messageInput').value;
+            if (message && room) {
+                socket.emit('send_message', {
+                    sender: "{{ username }}",
+                    room: room,
+                    message: message
+                });
+                document.getElementById('messageInput').value = '';
+            }
+        }
+
+        socket.on('receive_message', function(data) {
+            if (data.room === room) {
+                const msgDiv = document.createElement('div');
+                msgDiv.classList.add('message');
+                msgDiv.innerText = `${data.sender}: ${data.message}`;
+                document.getElementById('messages').appendChild(msgDiv);
+            }
+        });
+    </script>
+</body>
+</html>

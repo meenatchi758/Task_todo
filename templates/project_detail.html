@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% extends 'base.html' %}
+{% block title %}Project: {{ project.name }}{% endblock %}
+{% block content %}
+<h2>{{ project.name }}</h2>
+<p>{{ project.description }}</p>
+
+<h3>Tasks</h3>
+<form method="post" action="{{ url_for('add_task', project_id=project.id) }}">
+  <input type="text" name="title" placeholder="Task title" required>
+  <select name="status">
+    <option value="todo">To Do</option>
+    <option value="in_progress">In Progress</option>
+    <option value="done">Done</option>
+  </select>
+  <input type="date" name="due_date">
+  <button type="submit">Add Task</button>
+</form>
+
+<ul>
+  {% for task in tasks %}
+    <li>{{ task.title }} - {{ task.status }} - {{ task.due_date.strftime('%Y-%m-%d') if task.due_date else 'No due date' }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}
+
+</body>
+</html>

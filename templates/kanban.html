@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kanban Board</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  <style>
+    .kanban-board { display: flex; gap: 1rem; }
+    .kanban-column { flex: 1; background: #f1f1f1; padding: 1rem; border-radius: 8px; }
+    .kanban-task { background: white; padding: 0.5rem; margin-bottom: 0.5rem; border: 1px solid #ccc; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <div class="container mt-4">
+    <h1 class="mb-4">Kanban Board</h1>
+    <div class="kanban-board">
+      <div class="kanban-column">
+        <h4>To Do</h4>
+        <div id="todo" class="kanban-list">
+          {% for task in tasks if task.status == 'To Do' %}
+            <div class="kanban-task" data-id="{{ task.id }}">{{ task.title }}</div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="kanban-column">
+        <h4>In Progress</h4>
+        <div id="inprogress" class="kanban-list">
+          {% for task in tasks if task.status == 'In Progress' %}
+            <div class="kanban-task" data-id="{{ task.id }}">{{ task.title }}</div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="kanban-column">
+        <h4>Done</h4>
+        <div id="done" class="kanban-list">
+          {% for task in tasks if task.status == 'Done' %}
+            <div class="kanban-task" data-id="{{ task.id }}">{{ task.title }}</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const updateStatus = (taskId, newStatus) => {
+      fetch(`/task/update/${taskId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `status=${newStatus}&progress=${newStatus === 'Done' ? 100 : (newStatus === 'In Progress' ? 50 : 0)}`
+      }).then(() => location.reload());
+    };
+
+    ['todo', 'inprogress', 'done'].forEach(columnId => {
+      new Sortable(document.getElementById(columnId), {
+        group: 'kanban',
+        animation: 150,
+        onAdd: e => {
+          const taskId = e.item.dataset.id;
+          const statusMap = { todo: 'To Do', inprogress: 'In Progress', done: 'Done' };
+          updateStatus(taskId, statusMap[columnId]);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
